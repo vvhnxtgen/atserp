@@ -1,0 +1,15 @@
+[Unit]
+Description=Arudhya ERP (gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/arudhya-erp/backend
+EnvironmentFile=/opt/arudhya-erp/.env
+ExecStart=/opt/arudhya-erp/venv/bin/gunicorn arudhya_erp.wsgi \
+  --bind unix:/opt/arudhya-erp/gunicorn.sock --workers 3 --timeout 120
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

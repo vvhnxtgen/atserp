@@ -1,0 +1,43 @@
+# Render Blueprint — provisions the web service + a PostgreSQL database, wired
+# together automatically. In Render: New → Blueprint → point at this repo.
+databases:
+  - name: arudhya-erp-db
+    databaseName: arudhya_erp
+    plan: free                     # free Postgres (upgrade later for backups/retention)
+
+services:
+  - type: web
+    name: arudhya-erp-fullstack
+    runtime: python
+    plan: free
+    buildCommand: "./render-build.sh"
+    startCommand: "cd backend && gunicorn arudhya_erp.wsgi --bind 0.0.0.0:$PORT"
+    # Persistent disk so uploaded reports/images/certificates survive deploys.
+    disk:
+      name: arudhya-media
+      mountPath: /var/data/media
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL           # injected from the database above
+        fromDatabase:
+          name: arudhya-erp-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY      # generated once, kept stable
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_ALLOWED_HOSTS   # RENDER_EXTERNAL_HOSTNAME is auto-trusted too
+        value: ".onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.12.4"
+      - key: NODE_VERSION
+        value: "20"
+      # ---- Notifications (fill in the Render dashboard, not in git) ----
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: WHATSAPP_PROVIDER
+        value: "link"
+      - key: DJANGO_MEDIA_ROOT       # uploads live on the persistent disk
+        value: "/var/data/media"
