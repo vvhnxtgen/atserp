@@ -1,21 +1,26 @@
 #!/usr/bin/env bash
-set -o errexit
+set -e
 
-echo "Installing Python dependencies..."
+echo "=== Python dependencies ==="
 pip install -r requirements.txt
 
-echo "Installing frontend dependencies..."
+echo "=== Frontend ==="
 cd frontend
 npm ci
-
-echo "Building React frontend..."
 npm run build
 
-echo "Frontend build completed."
+echo "=== Checking frontend ==="
+if [ ! -f dist/index.html ]; then
+    echo "ERROR: frontend/dist/index.html was not created"
+    exit 1
+fi
+
 cd ..
 
-echo "Running Django migrations..."
+echo "=== Django migrations ==="
 python manage.py migrate --noinput
 
-echo "Collecting static files..."
+echo "=== Static files ==="
 python manage.py collectstatic --noinput
+
+echo "=== BUILD SUCCESS ==="
