@@ -82,7 +82,7 @@ WSGI_APPLICATION = "arudhya_erp.wsgi.application"
 #   postgres://…  postgresql://…  with URL-encoded passwords and query params.
 import dj_database_url
 
-_DB_URL = os.environ.get("DATABASE_URL", "").strip()
+_DB_URL = os.environ.get("DATABASE_URL", "postgresql://postgres:AdpZhruezLcxLOtMMoXBCYiCxQEFCpAE@postgres.railway.internal:5432/railway").strip()
 if _DB_URL:
     # Managed Postgres (e.g. Render) requires SSL. conn_health_checks keeps
     # long-lived connections healthy; conn_max_age reuses them across requests.
