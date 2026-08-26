@@ -25,7 +25,7 @@ _load_env(BASE_DIR.parent / ".env")
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-change-me-in-production")
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = [host.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", 'localhost,127.0.0.1').split(",") if host.strip()]
+ALLOWED_HOSTS = [host.strip() for h in os.environ.get("DJANGO_ALLOWED_HOSTS", 'localhost','127.0.0.1').split(",") if host.strip()]
 # Render provides the external hostname automatically — always trust it.
 _render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if _render_host and _render_host not in ALLOWED_HOSTS:
